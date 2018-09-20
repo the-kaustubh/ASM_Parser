@@ -1,4 +1,4 @@
-#include "include/fileRead.h"
+#include "../include/fileRead.h"
 
 FileStats getFileStats(const char * fname) {
   FILE * fp = fopen(fname, "r");
