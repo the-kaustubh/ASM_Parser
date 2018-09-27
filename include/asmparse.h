@@ -5,22 +5,26 @@
 #ifndef __ASMPARSE_H
 #define __ASMPARSE_H
 
-typedef struct gpReg {
+struct gpReg {
   char name;
   int value;
-} *GPR;
+};
+typedef struct gpReg *GPR;
 
-struct gpFlags {
+static struct gpFlags {
   unsigned int Carry:1;
   unsigned int Zero:1;
   unsigned int err:6;
 } FLAGS;
 
-struct gpReg AccumulatorReg, BaseReg, CounterReg, DataReg;
-GPR _AX = &AccumulatorReg;
-GPR _BX = &BaseReg;
-GPR _CX = &CounterReg;
-GPR _DX = &DataReg;
+struct gpReg AccumulatorRegister, BaseRegister, CounterRegister, DataRegister;
+GPR _AX = &AccumulatorRegister;
+GPR _BX = &BaseRegister;
+GPR _CX = &CounterRegister;
+GPR _DX = &DataRegister;
+
+GPR __register_array[] = {_AX, _BX, _CX, _DX};
+
 
 /* TODO: Implement
   add, sub, mul, div,
