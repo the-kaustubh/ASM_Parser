@@ -1,14 +1,8 @@
-// #include "../include/"
-/*
- * ASM Parser
- */
+#include "../include/asmparse.h"
+#include "../include/fileRead.h"
+#include "../include/opcodes.h"
+#include "../include/preprocess.h"
 
- /* TODO: Implement
-   add, sub, mul, div,
-   mov, push, pop,
-   or, and, not.
-
-   If time allows -
-   jmp, jz, jnz, jc, jnc, jg, jl.
-
-  */
+int main(int argc, char const *argv[]) {
+  return 0;
+}
