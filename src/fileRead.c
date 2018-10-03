@@ -78,7 +78,7 @@ LOC getLines(char const * fname) {
 void main() {
   LOC l1 = getLines("new.asm");
   for(int i =0; i < l1->lineCount; i++) {
-    char c1[5] = "", c2[5] = "", c0[5] = "";
+    char c1[5], c2[5], c0[5];
     printf("%s\n", l1->lines[i]);
     getOperands(l1->lines[i], c0, c1, c2);
     printf("opc: `%s` & op1: `%s` & op2: `%s`\n", c0, c1, c2);
