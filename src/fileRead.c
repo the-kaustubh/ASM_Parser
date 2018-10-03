@@ -1,4 +1,6 @@
 #include "../include/fileRead.h"
+#include "../include/opcodes.h"
+#include "../include/preprocess.h"
 
 FileStats getFileStats(const char * fname) {
   FILE * fp = fopen(fname, "r");
@@ -60,7 +62,10 @@ LOC getLines(char const * fname) {
       continue;
     }
     else {
-      *(*(lines+row)+col) = buffer[counter];
+      curr = buffer[counter];
+      if(curr >= 'A' && curr <= 'Z')
+        curr += 32;
+      *(*(lines+row)+col) = curr;
       col++;
     }
   }
@@ -68,4 +73,17 @@ LOC getLines(char const * fname) {
   loc1->lines = lines;
   free(fs);
   return loc1;
+}
+
+void main() {
+  LOC l1 = getLines("new.asm");
+  for(int i =0; i < l1->lineCount; i++) {
+    char c1[5] = "", c2[5] = "", c0[5] = "";
+    printf("%s\n", l1->lines[i]);
+    getOperands(l1->lines[i], c0, c1, c2);
+    printf("opc: `%s` & op1: `%s` & op2: `%s`\n", c0, c1, c2);
+    printf("opcode: %d\n", getOpcode(c0));
+    printf("---\n" );
+  }
+  printf("\n" );
 }
