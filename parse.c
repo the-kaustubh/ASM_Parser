@@ -38,26 +38,20 @@ int main(int argc, char const *argv[]) {
     c = fscanf(code, "%s%s%s\n", opc, op1, op2);
     if (c == 3) {
       int funcName = isCorrect(opc);
-      #ifdef DEBUG
-      printf("funcName %d\n", funcName);
-      #endif
+
       if(funcName < 0) {
         printf("Syntax Error: Aborting\n" );
         return 0;
       }
       sscanf(op1, "%[^,]s", op1);
       op1l = isOperand1Correct(op1);
-      #ifdef DEBUGH
-      printf("operand1 %d\n", op1l);
-      #endif
+
       if(!op1l) {
         printf("%s\n", "Invalid Operand");
         return 0;
       }
       lit = constructVal(op2);
-      #ifdef DEBUGOP2
-      printf("lit %d\n", lit);
-      #endif
+
       o[funcName](op1l, lit);
     }
   }
