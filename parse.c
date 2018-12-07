@@ -27,7 +27,11 @@ opcode o[] = {_mov, _add, _sub, _mul, _divi, _xor, _and, _or, _shl, _shr};
 
 int main(int argc, char const *argv[]) {
   if(argc != 2) {
-    printf("\x1b[1mparse: \x1b[31mfatal error:\x1b[0m no input files\ncompilation terminated.\n" );
+    #ifdef WIN
+    printf("parse: fatal error: no input files\ncompilation terminated.\n" );
+    #else
+    printf("\x1b[1mparse: \x1b[31mfatal error:\x1b[m no input files\ncompilation terminated.\n" );
+    #endif
     return 0;
   }
   FILE *code  = fopen(argv[1], "r");
@@ -84,9 +88,9 @@ char isOperand1Correct(char * op1)  {
 }
 
 int constructVal(char * operand)  {
-  int len  = strlen(operand);
+  int len  = strlen(operand), i = 0;
   int flag = 0;  // Assume it is already int
-  for(int i = 0; i < len; i++) {
+  for(i = 0; i < len; i++) {
     if(operand[i] > '9' || operand[i] < 0) {
       //  Simplified this -- !(operand[i] < '9' && operand[i] > 0)
       flag = 1;
