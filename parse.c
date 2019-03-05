@@ -38,9 +38,13 @@ int main(int argc, char const *argv[]) {
   char opc[10], op1[10], op2[10], c;
   int lit;
   char op1l;
+  int counter=0;
   while(!feof(code)) {
-    c = fscanf(code, "%s%s%s\n", opc, op1, op2);
+    c = fscanf(code, "%s%s%s\n", opc, op1, op2);  // worked just fine
+    // i++; //delete
+    // if(i==4) fseek(code, 29L, SEEK_SET);//delete
     if (c == 3) {
+      printf("%s %s %s\n", opc, op1, op2);
       int funcName = isCorrect(opc);
 
       if(funcName < 0) {
@@ -58,17 +62,30 @@ int main(int argc, char const *argv[]) {
 
       o[funcName](op1l, lit);
     }
+    else if (c == 2) {
+      int funcName = isCorrect(opc);
+      printf("%d\n", funcName);
+      printf("%s %s\n", opc, op1);
+    }
+    // else if(c == 1) {
+    //   printf("flag detected\n" );
+    //   flags[counter++] = ftell(code);
+    //   continue;
+    // }
   }
+  // for (size_t i = 0; i < counter; i++) {
+  //   printf("flag at %lu\n", flags[i]);
+  // }
   printf(" A = %d\n B = %d\n C = %d\n D = %d\n", A, B, C, D);
 }
 
 int isCorrect(char * opc) {
-  char legal[20][10] =
+  char legal[20][11] =
   {"mov", "add", "sub", "mul", "div",
-   "xor", "and", "or", "shl", "shr"
+   "xor", "and", "or", "shl", "shr", "jmp"
   };
   int i = 0, r;
-  while(i < 10) {
+  while(i < 11) {
     r = strcmp(opc, legal[i]);
     if (r == 0) return i;
     i++;
