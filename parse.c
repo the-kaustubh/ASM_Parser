@@ -6,8 +6,7 @@
 int main(int argc, char const *argv[]) {
 	FILE *code  = fopen(argv[1], "r");
 	char opc[10], op1[10], op2[10], line[50], c, op1l;
-	long flags[MAX_FLAGS] = {0};
-	int lit, counter=0;
+	int lit;
 
 	if(argc != 2) {
 #ifdef WIN
@@ -17,6 +16,15 @@ int main(int argc, char const *argv[]) {
 #endif
 		return 0;
 	}
+
+	while(fgets(line, 50, code)) {
+		c = sscanf(line, "%s%s%s", opc, op1, op2);
+		if(c != 1) continue;
+		int len = strlen(opc);
+		strncpy(labels[label_counter].name, opc, len-1);
+		labels[label_counter++].offset = ftell(code);
+	}
+	fseek(code, 0, SEEK_SET);
 
 	//    c = fscanf(code, "%s%s%s\n", opc, op1, op2);  // worked just fine
 	while(fgets(line, 50, code))  {
@@ -42,10 +50,10 @@ int main(int argc, char const *argv[]) {
 		}
 		else if (c == 2) {
 			int funcName = isCorrect(opc);
-			//     printf("%d\n", funcName);
+			// printf("funcName %d\n", funcName);
 			//printf("%s %s\n", opc, op1);
 			if(funcName < 0) {
-				printf("Syntax Error: Aborting");
+				printf("Syntax Error: Aborting\n");
 				return 0;
 			}
 			op1l = isOperand1Correct(op1);
@@ -60,26 +68,31 @@ int main(int argc, char const *argv[]) {
 					}
 					_pop(op1[0]);
 					break;
+				case 2:
+				// printf("----");
+					if(op1) {
+						long jumpHere = getOffset(op1, labels);
+						// printf("jumpHere %ld\n", jumpHere);
+						fseek(code, jumpHere-1, SEEK_SET);
+					}
+				break;
 			}
-		}
-		else if(c == 1) {
-		  printf("flag detected\n" );
-		  flags[counter++] = ftell(code);
-		  continue;
+		} else {
+			// printf("%s\n", opc);
 		}
 	}
-	for (size_t i = 0; i < counter; i++) {
-	  printf("flag at %lu\n", flags[i]);
-	}
+	// for (size_t i = 0; i < label_counter; i++) {
+	//   printf("label at %lu\n", labels[i].offset);
+	// }
 	printf(" A = %d\n B = %d\n C = %d\n D = %d\n", A, B, C, D);
-	fclose(fp);
+	fclose(code);
 }
 
 int isCorrect(char * opc) {
 	char legal[MAX_FUNC][5] =
 	{"mov", "add", "sub", "mul", "div",
 		"xor", "and", "or", "shl", "shr",
-		"push", "pop"
+		"push", "pop", "jmp"
 	};
 	int i = 0, r;
 	while(i < MAX_FUNC) {
@@ -232,4 +245,13 @@ void _pop(char c) {
 	stack_pointer--;
 	int val = stack[stack_pointer];
 	_mov(c, val);
+}
+
+long getOffset(char * name, struct label_t labelCollection[]) {
+	// printf("%s\n", "in here");
+	for (size_t searchCounter = 0; searchCounter < label_counter; searchCounter++) {
+		// printf("Label name: %s\n", labelCollection[searchCounter].name);
+		int comp = strcmp(labelCollection[searchCounter].name, name);
+		if(comp == 0) return labelCollection[searchCounter].offset;
+	}
 }
